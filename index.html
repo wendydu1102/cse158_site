@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Predicting Sleep Duration in Adults</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google Font: Outfit -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Bootstrap 5 CDN -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  />
+
+  <style>
+    :root {
+      --pastel-blue-1: #b3d5f2;
+      --pastel-blue-2: #d8efff;
+      --pastel-blue-accent: #a7c4e0;
+      --bg-soft: #f6f9fc;
+      --text-dark: #1f2933;
+      --text-muted: #6b7785;
+      --card-border-radius: 1rem;
+      --transition-fast: 0.2s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Outfit", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background-color: var(--bg-soft);
+      color: var(--text-dark);
+      font-size: 16px;
+      line-height: 1.6;
+      padding-top: 4.25rem; /* offset fixed navbar */
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* -------- GLOBAL LAYOUT & UTILITIES -------- */
+
+    .section {
+      padding: 3.5rem 0;
+    }
+
+    .section-light {
+      background-color: #ffffff;
+    }
+
+    .section-alt {
+      background: linear-gradient(
+        135deg,
+        var(--pastel-blue-2),
+        #ffffff 60%,
+        var(--pastel-blue-2)
+      );
+    }
+
+    .section-header {
+      margin-bottom: 2rem;
+    }
+
+    .section-kicker {
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: clamp(1.7rem, 2.5vw, 2.2rem);
+      margin-top: 0.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .section-subtitle {
+      color: var(--text-muted);
+      max-width: 640px;
+      font-size: 0.95rem;
+    }
+
+    a {
+      color: #2563eb;
+    }
+
+    a:hover {
+      color: #1d4ed8;
+    }
+
+    .chart-card {
+      background-color: #ffffff;
+      border-radius: 1rem;
+      padding: 1.25rem;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .chart-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .chart-caption {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 0;
+    }
+
+    /* -------- NAVBAR -------- */
+
+    .navbar {
+      font-size: 0.95rem;
+    }
+
+    .navbar-brand span {
+      color: #2563eb;
+      font-weight: 700;
+    }
+
+    .nav-link {
+      font-weight: 500;
+    }
+
+    .nav-link.active,
+    .nav-link:focus,
+    .nav-link:hover {
+      color: #1d4ed8 !important;
+    }
+
+    /* -------- HERO / HOMEPAGE -------- */
+
+    .hero {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      background: radial-gradient(circle at top left, var(--pastel-blue-1), transparent 55%),
+        radial-gradient(circle at bottom right, var(--pastel-blue-2), transparent 55%);
+    }
+
+    .hero-pill {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 999px;
+      padding: 0.35rem 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .hero-pill span {
+      height: 0.55rem;
+      width: 0.55rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--pastel-blue-1), var(--pastel-blue-accent));
+      box-shadow: 0 0 0 4px rgba(179, 213, 242, 0.4);
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 3.2vw, 2.6rem);
+      font-weight: 700;
+    }
+
+    .hero-highlight {
+      background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      color: var(--text-muted);
+      max-width: 580px;
+      font-size: 0.95rem;
+    }
+
+    .hero-badge-row {
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-badge {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 0.5rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .hero-cta-main {
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      border: none;
+      color: #ffffff;
+      font-weight: 600;
+      border-radius: 999px;
+      padding-inline: 1.6rem;
+      padding-block: 0.55rem;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .hero-cta-main:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.32);
+    }
+
+    .hero-cta-secondary {
+      border-radius: 999px;
+      font-weight: 500;
+      padding-inline: 1.3rem;
+      padding-block: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .hero-visual {
+      background: linear-gradient(135deg, var(--pastel-blue-1), #ffffff);
+      border-radius: 1.5rem;
+      box-shadow: 0 22px 40px rgba(15, 23, 42, 0.16);
+      padding: 1.25rem;
+      position: relative;
+    }
+
+    .hero-chart-placeholder {
+      border-radius: 1rem;
+      background: rgba(255, 255, 255, 0.95);
+      min-height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .hero-chip {
+      position: absolute;
+      bottom: 1.1rem;
+      right: 1.3rem;
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5f2ff;
+      padding: 0.6rem 0.9rem;
+      border-radius: 0.9rem;
+      font-size: 0.76rem;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.45);
+    }
+
+    .hero-chip strong {
+      color: #38bdf8;
+    }
+
+    /* -------- PREDICTIVE TASK CARDS -------- */
+
+    .info-card {
+      padding: 1.1rem 1.1rem;
+      border-radius: 0.9rem;
+      background-color: #ffffff;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      height: 100%;
+    }
+
+    .info-card h6 {
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+    }
+
+    .info-card p {
+      font-size: 0.9rem;
+    }
+
+    /* -------- KEY FINDINGS CARDS (Evaluation) -------- */
+
+    .keyfindings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .key-card {
+      position: relative;
+      padding: 1.3rem 1.2rem 1.5rem 1.2rem;
+      border-radius: var(--card-border-radius);
+      background: radial-gradient(circle at top left, #ffffff, #e3f1ff);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.07);
+      overflow: hidden;
+      cursor: default;
+      transition: transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        border-color var(--transition-fast),
+        background 0.2s ease-in-out;
+    }
+
+    .key-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 55%);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+      pointer-events: none;
+    }
+
+    .key-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
+      border-color: rgba(37, 99, 235, 0.55);
+    }
+
+    .key-card:hover::before {
+      opacity: 1;
+    }
+
+    .key-card-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      font-weight: 600;
+      color: #1e40af;
+      background-color: rgba(191, 219, 254, 0.7);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      margin-bottom: 0.7rem;
+    }
+
+    .key-card-label span {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    }
+
+    .key-card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .key-card-metric {
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: #0f172a;
+      margin-bottom: 0.55rem;
+    }
+
+    .key-card-body {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .key-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      color: #0f172a;
+      background-color: rgba(219, 234, 254, 0.9);
+      padding: 0.3rem 0.6rem;
+      border-radius: 999px;
+      margin-top: 0.2rem;
+    }
+
+    .key-card-badge svg {
+      width: 0.8rem;
+      height: 0.8rem;
+    }
+
+    .key-card-footer {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+      color: #1e40af;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .key-card-footer svg {
+      width: 0.78rem;
+      height: 0.78rem;
+    }
+
+    /* -------- RESPONSIVE TWEAKS -------- */
+
+    @media (max-width: 576px) {
+      .hero {
+        min-height: auto;
+        padding-top: 4.5rem;
+      }
+
+      .hero-visual {
+        margin-top: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-semibold" href="#home">
+        Sleep<span>ML</span>
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" href="#home">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#task">Predictive Task</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#eda">EDA</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#modeling">Modeling</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#evaluation">Evaluation</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#related-work">Related Work</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HOMEPAGE / HERO ===== -->
+  <section id="home" class="section hero">
+    <div class="container">
+      <div class="row align-items-center gy-4">
+        <div class="col-lg-6">
+          <div class="hero-pill mb-3">
+            <span></span>
+            CSE 158 · NHANES 2021–2023 · Regression
+          </div>
+          <h1 class="hero-title mb-3">
+            Predicting <span class="hero-highlight">Sleep Duration</span> in U.S. Adults
+          </h1>
+          <p class="hero-subtitle mb-3">
+            A machine learning analysis of NHANES 2021–2023 data by
+            <strong>Sophia Vo</strong>, <strong>Jenny Xu</strong>, and
+            <strong>Wendy Du</strong>. We ask a simple question: given your
+            demographics, health, and lifestyle, how well can we guess how long
+            you sleep?
+          </p>
+          <div class="d-flex hero-badge-row mb-4">
+            <div class="hero-badge">Supervised regression task</div>
+            <div class="hero-badge">Gradient Boosting is top performer</div>
+            <div class="hero-badge">Low R² ⇒ sleep is hard to predict</div>
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <a href="#task" class="btn btn-lg hero-cta-main">Explore the Study</a>
+            <a href="#evaluation" class="btn btn-outline-primary hero-cta-secondary">
+              Jump to Key Findings
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="hero-visual">
+            <div class="hero-chart-placeholder">
+              <!-- High-level model comparison in hero to match “Best model” chip -->
+              <img src="plots/image_006.png" class="img-fluid rounded-3" alt="Model performance comparison by MAE" />
+            </div>
+            <div class="hero-chip">
+              Best model: <strong>Gradient Boosting</strong><br />
+              R² ≈ 0.038 · MAE ↓ after tuning
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PREDICTIVE TASK ===== -->
+  <section id="task" class="section section-light">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-kicker">The Predictive Task</div>
+        <h2 class="section-title">What exactly are we predicting?</h2>
+        <p class="section-subtitle">
+          We use machine learning to predict adults’ nightly sleep duration in
+          hours, using demographic, socioeconomic, and health-related variables
+          from NHANES. This is framed as a supervised regression problem.
+        </p>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-md-4">
+          <div class="info-card h-100">
+            <h6 class="text-uppercase text-muted small fw-semibold mb-2">
+              Target
+            </h6>
+            <p class="mb-1 fw-semibold">Average nightly sleep (hours)</p>
+            <p class="small text-muted mb-0">
+              Aggregated from weekday and weekend self-reported sleep duration.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="info-card h-100">
+            <h6 class="text-uppercase text-muted small fw-semibold mb-2">
+              Inputs
+            </h6>
+            <p class="mb-1 fw-semibold">Demographics &amp; lifestyle</p>
+            <p class="small text-muted mb-0">
+              Age, gender, race/ethnicity, poverty-income ratio, work status,
+              exercise, alcohol use, and mental health indicators such as
+              depression frequency.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="info-card h-100">
+            <h6 class="text-uppercase text-muted small fw-semibold mb-2">
+              Evaluation
+            </h6>
+            <p class="mb-1 fw-semibold">MAE, RMSE, R² on held-out test set</p>
+            <p class="small text-muted mb-0">
+              We compare models against naive and linear baselines and carefully
+              tune hyperparameters via cross-validation.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <h5 class="fw-semibold mb-2">Plain-language explanation</h5>
+          <p>
+            Each NHANES participant tells us how many hours they usually sleep
+            on weekdays and weekends. They also provide extensive information
+            about their health, work, and habits. Our goal is to teach a model
+            to see patterns in this data so that, given a new person with
+            similar characteristics, it can estimate how long they typically
+            sleep at night.
+          </p>
+          <p>
+            We measure how far off our guesses are in hours. If the model says
+            "7.5 hours" and the person reports "6.5 hours", that is a 1-hour
+            error. We summarize performance with the average error across
+            everyone in the test set.
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <h5 class="fw-semibold mb-2">Technical formulation</h5>
+          <ul class="small">
+            <li>
+              <strong>Task type:</strong> supervised regression, predicting
+              continuous sleep duration.
+            </li>
+            <li>
+              <strong>Input features (X):</strong> demographic variables
+              (age, gender, race/ethnicity, household size, poverty-income
+              ratio), lifestyle variables (exercise per day, work status,
+              alcohol use), and mental health indicators (depression, appetite).
+            </li>
+            <li>
+              <strong>Target (y):</strong> <code>Avg_Sleep</code>, the average
+              nightly sleep duration in hours across weekdays and weekends.
+            </li>
+            <li>
+              <strong>Baselines:</strong> global mean predictor, linear
+              regression on core features, and regularized linear models.
+            </li>
+            <li>
+              <strong>Validity checks:</strong> train/validation/test split,
+              k-fold cross-validation for hyperparameters, and residual analysis
+              across key subgroups (age, gender, race/ethnicity).
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EDA ===== -->
+  <section id="eda" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-kicker">Exploratory Data Analysis</div>
+        <h2 class="section-title">What does the NHANES data look like?</h2>
+        <p class="section-subtitle">
+          We explored NHANES 2021–2023 data for U.S. adults (18+) to understand
+          how sleep, demographics, and health variables are distributed before
+          fitting any models.
+        </p>
+      </div>
+
+      <!-- Numeric distributions row -->
+      <div class="row g-4 align-items-stretch mb-4">
+        <div class="col-lg-8">
+          <div class="chart-card">
+            <h6 class="chart-title">Sleep &amp; numeric features</h6>
+            <img src="plots/image_006.png" alt="Distributions of numeric variables" /> 
+            <div class="border rounded-3 p-4 text-center text-muted small">
+              Numeric distributions — a grid of histograms or boxplots
+              for age, household size, poverty-income ratio, average sleep, weekday
+              sleep, weekend sleep, and exercise per day.
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="chart-card">
+            <h6 class="chart-title">Key takeaways</h6>
+            <ul class="small mb-0">
+              <li>
+                <strong>Average sleep</strong> clusters near 7–8 hours, with
+                fewer people at very short or very long durations.
+              </li>
+              <li>
+                <strong>Exercise per day</strong> is highly skewed: most adults
+                report very low exercise, with a long tail of high values.
+              </li>
+              <li>
+                The <strong>poverty-income ratio</strong> is unevenly
+                distributed, with many participants concentrated near higher
+                ratios.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Demographics & mental health row -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+          <div class="chart-card">
+            <h6 class="chart-title">Demographic breakdowns</h6>
+            <img src="plots/image_005.png" class="rounded-3" alt="Demographic distributions" />
+            <p class="chart-caption">
+              The sample covers a broad range of racial/ethnic groups and work
+              statuses. Most respondents report having ever consumed alcohol, but we decided to toss this category considering the negative bias.
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="chart-card">
+            <h6 class="chart-title">
+              Sleep and mental health: weekday sleep vs. depression
+            </h6>
+            <img src="plots/image_008.png" class="rounded-3" alt="Sleep duration vs depression frequency" />
+            <p class="chart-caption">
+              Participants who report more frequent depressive symptoms tend to
+              have slightly more dispersed and sometimes shorter sleep
+              distributions, hinting at a complex relationship between sleep and
+              mental health.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Missingness & correlations row -->
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="chart-card">
+            <h6 class="chart-title">Missingness map</h6>
+            <img src="plots/image_001.png" class="rounded-3" alt="Missing data heatmap" />
+            <p class="chart-caption">
+              Most variables are fully observed, with missingness concentrated
+              in a few self-reported mental health and alcohol-use questions.
+              Rows with missing target values were removed; remaining missing
+              features were handled via simple strategies during preprocessing.
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="chart-card">
+            <h6 class="chart-title">
+              Correlations between numeric variables
+            </h6>
+            <img src="plots/image_007.png" class="rounded-3" alt="Numeric correlation heatmap" />
+            <p class="chart-caption">
+              Weekday and weekend sleep duration are moderately correlated
+              (ρ ≈ 0.63), and both are strongly correlated with our final target
+              <code>Avg_Sleep</code>. Other numeric predictors (age, exercise,
+              income ratio) show only weak correlations with sleep, foreshadowing
+              the difficulty of prediction.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MODELING ===== -->
+  <section id="modeling" class="section section-light">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-kicker">Modeling</div>
+        <h2 class="section-title">How did we build the models?</h2>
+        <p class="section-subtitle">
+          We compared a suite of linear and non-linear models, from simple
+          baselines to ensemble methods and neural networks, to see which best
+          predicts sleep duration given our feature set.
+        </p>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-lg-4">
+          <div class="chart-card">
+            <h6 class="chart-title">Linear baselines</h6>
+            <ul class="small mb-0">
+              <li>Ordinary Linear Regression</li>
+              <li>Ridge Regression</li>
+              <li>Lasso and ElasticNet</li>
+              <li>
+                Pros: interpretable, stable, low risk of overfitting; Cons:
+                limited ability to capture non-linear patterns.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="chart-card">
+            <h6 class="chart-title">Tree-based &amp; ensemble models</h6>
+            <ul class="small mb-0">
+              <li>Decision Tree Regressor</li>
+              <li>Random Forest &amp; Extra Trees</li>
+              <li>Gradient Boosting &amp; HistGradientBoosting</li>
+              <li>
+                Pros: flexible and non-linear; Cons: more complex, require
+                tuning, less transparent than linear models.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="chart-card">
+            <h6 class="chart-title">Other models</h6>
+            <ul class="small mb-0">
+              <li>Support Vector Regression (RBF kernel)</li>
+              <li>k-Nearest Neighbors</li>
+              <li>Multi-layer Perceptron (neural network)</li>
+              <li>
+                These methods can, in principle, approximate very complex
+                relationships but are highly sensitive to hyperparameters and
+                data scale.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div>
+            <h5 class="fw-semibold mb-2">Preprocessing pipeline</h5>
+            <ul class="small mb-0">
+              <li>
+                Filter to adults (18+) and merge NHANES modules on respondent ID.
+              </li>
+              <li>
+                Drop rows with missing sleep duration; handle remaining missing
+                values using simple imputation strategies.
+              </li>
+              <li>
+                Encode categorical variables (e.g., gender, race/ethnicity, work
+                status) using appropriate encodings.
+              </li>
+              <li>
+                Standardize or scale features where required (especially for SVR,
+                k-NN, and neural networks).
+              </li>
+              <li>
+                Split data into train, validation, and test sets with a fixed
+                random seed; run grid search or randomized search over
+                hyperparameters using cross-validation on the training data.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="chart-card">
+            <h6 class="chart-title">Model comparison by MAE</h6>
+            <p class="chart-caption mb-2">
+              Tuning reduces error and slightly improves R², with Gradient
+              Boosting and SVR emerging as top performers.
+            </p>
+            <img src="plots/image_009.png" class="rounded-3" alt="Model comparison by MAE" />
+            <img src="plots/image_010.png" class="rounded-3" alt="Model comparison by MAE" />
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EVALUATION / KEY FINDINGS ===== -->
+  <section id="evaluation" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-kicker">Evaluation &amp; Results</div>
+        <h2 class="section-title">Key findings from the model comparison</h2>
+        <p class="section-subtitle">
+          After hyperparameter tuning, we evaluated all models on the held-out
+          test set. Despite modest R² scores across the board, the comparison
+          reveals clear patterns about which methods work best and why predicting
+          sleep is so difficult.
+        </p>
+      </div>
+
+      <!-- INTERACTIVE KEY FINDINGS CARDS -->
+      <div class="keyfindings-grid mb-4">
+        <!-- Card 1 -->
+        <article class="key-card">
+          <div class="key-card-label">
+            <span></span>
+            Non-linear &amp; Ensemble Models
+          </div>
+          <h3 class="key-card-title">Gradient Boosting takes the lead</h3>
+          <p class="key-card-metric">
+            R²: 0.018 → <strong>0.038</strong> after tuning · MAE decreased
+            noticeably
+          </p>
+          <p class="key-card-body">
+            Gradient Boosting showed one of the most dramatic improvements once
+            its hyperparameters were tuned. It moved from a mediocre baseline to
+            the <strong>best overall model</strong>, demonstrating that modest
+            non-linear structure in the data can be exploited when the model is
+            configured carefully.
+          </p>
+          <div class="key-card-badge">
+            <!-- Simple inline icon -->
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M4 18h3l2-6 3 8 2-5h4l2-9h-2.1l-1.43 6h-3.23l-1.77 4.44L9 6 6.62 15H4v3z"
+              />
+            </svg>
+            #1 model after tuning
+          </div>
+          <div class="key-card-footer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M3 12h2l3.5-7 4 14 3-8 1.5 4H21"
+              />
+            </svg>
+            Tuning unlocks non-linear performance
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="key-card">
+          <div class="key-card-label">
+            <span></span>
+            Hyperparameter Sensitivity
+          </div>
+          <h3 class="key-card-title">
+            SVR, Extra Trees &amp; HistGradientBoosting rebound
+          </h3>
+          <p class="key-card-metric">
+            Negative R² → <strong>top-5 performers</strong> after tuning
+          </p>
+          <p class="key-card-body">
+            Support Vector Regression (RBF kernel), Extra Trees, and
+            HistGradientBoosting all started with negative R² scores—worse than
+            simply predicting the mean. After tuning, they rose into the top
+            tier of models, with SVR ultimately becoming the
+            <strong>second-best</strong> performer.
+          </p>
+          <p class="key-card-body mb-1">
+            Their default settings were poorly matched to the dataset, but
+            careful adjustment of depth, learning rate, and regularization
+            transformed them into strong contenders.
+          </p>
+          <div class="key-card-footer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 3l4 4h-3v7h-2V7H8l4-4zm-7 9h2a5 5 0 005 5v2A7 7 0 015 12z"
+              />
+            </svg>
+            Default hyperparameters can be misleading
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="key-card">
+          <div class="key-card-label">
+            <span></span>
+            Linear Models
+          </div>
+          <h3 class="key-card-title">Stable but quickly outpaced</h3>
+          <p class="key-card-metric">
+            Minimal change in performance before vs. after tuning
+          </p>
+          <p class="key-card-body">
+            Ridge, Lasso, and ElasticNet regressions changed very little with
+            tuning. In some cases, cross-validation even selected parameters that
+            were slightly worse on the test set—a normal outcome when optimizing
+            averaged fold performance.
+          </p>
+          <p class="key-card-body mb-1">
+            These models were <strong>among the best before tuning</strong>, but
+            they lack the flexibility to capture non-linear patterns. Once
+            tuned, the more complex non-linear models quickly surpassed their
+            performance ceiling.
+          </p>
+          <div class="key-card-footer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M4 18h16v-2H4v2zm0-5h10v-2H4v2zm0-5h7V6H4v2z"
+              />
+            </svg>
+            Reliable baselines, limited expressiveness
+          </div>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="key-card">
+          <div class="key-card-label">
+            <span></span>
+            Most Improved, Still Struggling
+          </div>
+          <h3 class="key-card-title">MLP &amp; k-NN show big gains but low R²</h3>
+          <p class="key-card-metric">
+            MLP R²: −0.2675 → <strong>−0.0047</strong> · MAE ↓ by &gt;11%
+          </p>
+          <p class="key-card-body">
+            The neural network (MLP) achieved the largest absolute improvement,
+            moving from essentially unusable to nearly matching the trivial
+            baseline. Yet it remained the second-worst model overall, likely
+            because the dataset is too small and noisy for such a flexible model
+            to learn stable patterns.
+          </p>
+          <p class="key-card-body mb-1">
+            k-Nearest Neighbors improved its R² by over 50% but also stayed near
+            the bottom of the ranking, suggesting that distance-based similarity
+            is not a good inductive bias for this feature space.
+          </p>
+          <div class="key-card-footer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5v5.59l3.3 3.3-1.42 1.42L11 13.41V7h2z"
+              />
+            </svg>
+            Big relative gains, modest absolute performance
+          </div>
+        </article>
+
+        <!-- Card 5 -->
+        <article class="key-card">
+          <div class="key-card-label">
+            <span></span>
+            Overall Difficulty
+          </div>
+          <h3 class="key-card-title">Sleep is fundamentally hard to predict</h3>
+          <p class="key-card-metric">
+            All models achieve <strong>low R²</strong> despite tuning
+          </p>
+          <p class="key-card-body">
+            Even our best model explains only a small fraction of the variance
+            in sleep duration. This suggests that many key determinants of how
+            long people sleep—such as stress, environment, chronotype, shift
+            work, and unmeasured health factors—are missing from the available
+            features.
+          </p>
+          <p class="key-card-body mb-1">
+            The result is a sobering one: sophisticated algorithms cannot fully
+            compensate for incomplete data. For predicting sleep duration,
+            observable demographics and basic health metrics only tell part of
+            the story.
+          </p>
+          <div class="key-card-footer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 4a8 8 0 100 16 8 8 0 000-16zm1 11h-2v-2h2v2zm0-4h-2V7h2v4z"
+              />
+            </svg>
+            Data limitations dominate model choice
+          </div>
+        </article>
+
+        <!-- Card 6 -->
+        <article class="key-card">
+          <div class="key-card-label">
+            <span></span>
+            Main Lessons
+          </div>
+          <h3 class="key-card-title">What should we remember?</h3>
+          <p class="key-card-body">
+            First, <strong>hyperparameter tuning is essential</strong>. For
+            non-linear and ensemble models, tuning can transform an
+            underperformer into a top model and is necessary for fair
+            comparison.
+          </p>
+          <p class="key-card-body">
+            Second, the task itself is intrinsically challenging. The
+            consistently low R² scores across all algorithms reveal that the
+            majority of variability in sleep duration simply cannot be captured
+            by the features available in NHANES.
+          </p>
+          <div class="key-card-footer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M9 18l-5-5 1.41-1.41L9 15.17l9.59-9.59L20 7l-11 11z"
+              />
+            </svg>
+            Tuning matters, but data matters even more
+          </div>
+        </article>
+      </div>
+
+      <div class="bg-white rounded-4 p-3 shadow-sm">
+        <h6 class="fw-semibold mb-2">Model metrics overview</h6>
+        <p class="small text-muted mb-1">
+          Insert a table summarizing MAE, RMSE, and R² for each model family,
+          comparing pre- and post-tuning performance.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RELATED WORK ===== -->
+  <section id="related-work" class="section section-light">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-kicker">Related Work</div>
+        <h2 class="section-title">How does this compare to prior research?</h2>
+        <p class="section-subtitle">
+          Many NHANES studies use sleep duration as an input to explain health
+          outcomes such as cardiovascular disease, obesity, and mental health.
+          Our project reverses the direction: we attempt to predict sleep from
+          demographic and health features.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="chart-card">
+            <h6 class="chart-title">NHANES &amp; sleep duration</h6>
+            <p class="small">
+              Prior work has leveraged NHANES to examine associations between
+              short or long sleep and outcomes such as cardiovascular risk,
+              metabolic syndrome, and depressive symptoms. These studies
+              typically treat sleep as a categorical exposure (e.g.,
+              short/normal/long) and use logistic or linear regression with
+              carefully selected covariates.
+            </p>
+            <p class="small mb-0">
+              Our findings echo a consistent theme: sleep is correlated with many
+              aspects of health, but the relationships are noisy and heavily
+              confounded by unobserved factors.
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="chart-card">
+            <h6 class="chart-title">Machine learning in sleep research</h6>
+            <p class="small">
+              Recent work applies machine learning to classify sleep disorders,
+              detect apnea from physiological signals, or predict health outcomes
+              from wearable-derived sleep metrics. Compared to those settings,
+              our problem is limited by coarser self-reported features and
+              cross-sectional data, which helps explain the modest performance of
+              even sophisticated models.
+            </p>
+            <p class="small mb-0">
+              By systematically benchmarking a wide range of models on NHANES, we
+              highlight where modern ML adds value and where better data
+              collection is the real bottleneck.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="py-4 border-top bg-white">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+      <p class="mb-0 small text-muted">
+        &copy; 2025 · Predicting Sleep Duration in Adults · CSE 158 Assignment 2
+      </p>
+      <p class="mb-0 small">
+        Code &amp; notebook:&nbsp;
+        <a
+          href="https://github.com/sophia-vo/CSE-158-Assignment-2/tree/main"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub Repository
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS (optional: for navbar collapse) -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"
+  ></script>
+</body>
+</html>
